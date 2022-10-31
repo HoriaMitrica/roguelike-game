@@ -30,6 +30,7 @@ let GAME = {
  * @returns 
  */
 function initPlayer(name, race) {
+    
     return {
         x: 15,
         y: 15,
@@ -85,8 +86,9 @@ function init() {
     GAME.currentRoom = ROOM.A
     GAME.map = generateMap()
     GAME.board = createBoard(c.boardWidth, c.boardHeight, c.emptySpace)
-    GAME.player = initPlayer("Legolas", "Elf")
+    GAME.player = initPlayer(GAME.player.name, GAME.player.race)
     drawScreen()
+    console.log(GAME.player);
 }
 
 /**
@@ -97,15 +99,24 @@ function generateMap() {
         [ROOM.A]: {
             layout: [10, 10, 20, 20],
             gates: [
-                // { to: ROOM.B, x: 20, y: 15, icon: c.gateVertical, playerStart: { x: 7, y: 15 } },
+                { to: ROOM.B, 
+                x: 20, 
+                y: 15, 
+                icon: c.gateVertical, 
+                playerStart: { x: 7, y: 15 } 
+            },
             ],
             enemies: [],
             items: []
         },
         [ROOM.B]: {
-            layout: [13, 6, 17, 70],
+            layout: [13, 20, 17, 70],
             gates: [
-                // { to: ROOM.A, x: 6, y: 15, icon: c.gateHorizontal, playerStart: { x: 19, y: 15 } },
+                 { to: ROOM.A, 
+                    x: 6, 
+                    y: 15, 
+                    icon: c.gateHorizontal, 
+                    playerStart: { x: 19, y: 15 } },
             ],
             enemies: [
                 // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
@@ -120,8 +131,15 @@ function generateMap() {
  * @param {*} board the gameplay area
  */
  function displayBoard(board) {
-    const screen = "" // ...
+    let screen = "" // ...
+    board.forEach((row)=>{
+        row.forEach((element)=>{
+            screen+=element;
+        });
+        screen+="\n";
+    });
     _displayBoard(screen)
+
 }
 
 /**
@@ -130,7 +148,11 @@ function generateMap() {
 function drawScreen() {
     // ... reset the board with `createBoard`
     // ... use `drawRoom`
+        drawRoom(GAME.board,GAME.map.A.layout[0],GAME.map.A.layout[1],GAME.map.A.layout[2],GAME.map.A.layout[3],GAME.map.A.gates)
+        //drawRoom(GAME.board,GAME.map.B.layout[0],GAME.map.B.layout[1],GAME.map.B.layout[2],GAME.map.B.layout[3],GAME.map.B.gates)
     // ... print entities with `addToBoard`
+    addToBoard(GAME.board,GAME.player)
+    console.log(GAME.board);
     displayBoard(GAME.board)
 }
 
@@ -189,8 +211,9 @@ function hit(board, y, x) {
  * @param {*} item anything with position data
  * @param {string} icon icon to print on the screen
  */
-function addToBoard(board, item, icon) {
+function addToBoard(board, item) {
     // ...
+    board[item.x][item.y]=item.icon;
 }
 
 /**
@@ -213,6 +236,13 @@ function removeFromBoard(board, item) {
  */
 function createBoard(width, height, emptySpace) {
     // ...
+    let matrix=[];
+    for(let i=0;i<height;i++){
+        matrix[i]=[];
+        for(let j=0;j<width;j++)
+        matrix[i][j]=emptySpace;
+    }
+    return matrix;
 }
 
 /**
@@ -224,8 +254,22 @@ function createBoard(width, height, emptySpace) {
  * @param {*} bottomY room's bottom position on Y axis
  * @param {*} rightX room's right position on X axis
  */
-function drawRoom(board, topY, leftX, bottomY, rightX) {
+function drawRoom(board, topY, leftX, bottomY, rightX,allGates) {
     // ...
+        for(let j=leftX;j<=rightX;j++){
+            board[topY][j]=c.wall;
+            board[bottomY][j]=c.wall;
+        }
+
+        for(let j=topY;j<=bottomY;j++){
+            board[j][leftX]=c.wall;
+            board[j][rightX]=c.wall;
+        }
+        for(let i=0;i<allGates.length;i++){
+            board[allGates[i].x][allGates[i].y]=allGates[i].icon;
+        }
+
+    
 }
 
 /**
@@ -293,6 +337,7 @@ function _start(moveCB) {
         }
     }
     document.addEventListener("keypress", _keypressListener)
+    init();
 }
 
 /**
@@ -322,5 +367,3 @@ function _restart() {
     endBox.classList.add("is-hidden")
     init()
 }
-
-init()
