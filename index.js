@@ -30,7 +30,7 @@ function initPlayer(name, race) {
                 defense: 1,
                 isPlayer: true,
                 inventory:{
-                    "gold coin":5,
+                    "Gold Coin":5,
                 }
             }
         }
@@ -98,7 +98,11 @@ const enemyIcon= {
 }
 const itemIcon={
     goldCoin:"g",
-    torch:"t"
+    torch:"t",
+    clothArmor:"c",
+    healthPotion:"p",
+    attackPotion:"a",
+    defensePotion:"d"
 }
 
 /**
@@ -118,16 +122,56 @@ const enemyInfo = {
     // [ENEMY.RAT]: { health: 10, attack: 1, defense: 0, icon: ENEMY.RAT, race: "Rat", isBoss: false },
 }
 const itemInfo={
+    torch:{
+        name:"Torch",
+        type:"miscellanoeus",
+        icon:itemIcon.torch
+    },
     goldCoin:{
-    name:"gold coin",
+    name:"Gold Coin",
     type:"currency",
     icon:itemIcon.goldCoin,
     },
-    torch:{
-        name:"torch",
-        type:"miscllaneous",
-        icon:itemIcon.torch,
+    healthPotion:{
+        name:"Health Potion",
+        type:"potion",
+        icon:itemIcon.healthPotion,
+        stats:{
+            health:5,
+            attack:0,
+            defense:0
         }
+        },
+    attackPotion:{
+        name:"Attack Potion",
+        type:"potion",
+        icon:itemIcon.attackPotion,
+        stats:{
+            health:0,
+            attack:5,
+            defense:0
+        }
+        },
+        defensePotion:{
+            name:"Defense Potion",
+            type:"potion",
+            icon:itemIcon.defensePotion,
+            stats:{
+                    health:0,
+                attack:0,
+                dfense:5
+            }
+        },
+    clothArmor:{
+        name:"Cloth Armor",
+        type:"equipment",
+        icon:itemIcon.clothArmor,
+        stats:{
+            health:10,
+            attack:0,
+            defense:1
+        }
+    }
 }
 function init() {
     GAME.currentRoom = ROOM.A;
@@ -170,15 +214,15 @@ function generateMap() {
                 x:14,
                 y:13,
                 amount:1,
-                info:itemInfo.goldCoin,
+                info:itemInfo.clothArmor,
                 collected:false
-    
+
             },
             {
                 x:11,
                 y:18,
                 amount:2,
-                info:itemInfo.torch,
+                info:itemInfo.healthPotion,
                 collected:false
             }
         ]
@@ -222,7 +266,6 @@ function generateMap() {
         }
     }
 }
-
  function displayBoard(board) {
     let screen = "" // ...
     board.forEach((row)=>{
@@ -246,11 +289,43 @@ function drawScreen() {
     addToBoard(GAME.board,GAME.player)
     displayBoard(GAME.board)
 }
-
+function moveAI(who){
+    let yDiff=Math.floor(Math.random() * 3)
+    let xDiff=Math.floor(Math.random() * 3)
+    if(yDiff===2)
+    yDiff=-1;
+    if(xDiff===2)
+    xDiff=-1;
+    for(let i=0;who.length;i++){
+        if(GAME.board[who[i].y+yDiff][who[i].x+xDiff]===c.emptySpace && who[i].killed===false){
+            removeFromBoard(GAME.board,who[i]);
+            who[i].x+=xDiff;
+            who[i].y+=yDiff;
+            addToBoard(GAME.board,who[i]);
+            displayBoard(GAME.board);
+        }
+    }
+}
 function moveAll(yDiff, xDiff) {
     // ... use `move` to move all entities
     // ... show statistics with `showStats`
     // ... reload screen with `drawScreen`
+    // for(let i=0;i<enemies.length,i++)
+    move(GAME.player,yDiff,xDiff)
+    switch(GAME.currentRoom){
+        case "A":{
+            moveAI(GAME.map.A.enemies)
+            break;
+        }
+        case "B":{
+            moveAI(GAME.map.B.enemies)
+            break;
+        }
+        case "C":{
+            moveAI(GAME.map.C.enemies)
+            break;
+        }
+    }
 }
 function combat(who,room,moved,yDiff, xDiff){
     for(let i=0;i<room.enemies.length;i++) {
@@ -260,9 +335,9 @@ function combat(who,room,moved,yDiff, xDiff){
             showStats(who);
         if(room.enemies[i].x===who.x+xDiff && room.enemies[i].y===who.y+yDiff && room.enemies[i].killed===false && moved===false){    
             if(who.attack-room.enemies[i].info.defense>0)
-                    room.enemies[i].info.health-=who.attack-room.enemies[i].info.defense;
-                if(room.enemies[i].info.attack>who.defense)
-                    who.health-=room.enemies[i].info.attack-who.defense;
+                room.enemies[i].info.health-=who.attack-room.enemies[i].info.defense;
+            if(room.enemies[i].info.attack>who.defense)
+                who.health-=room.enemies[i].info.attack-who.defense;
                 if(room.enemies[i].info.health<=0){
                     room.enemies[i].info.health=0;
                     room.enemies[i].killed=true;
@@ -275,9 +350,10 @@ function combat(who,room,moved,yDiff, xDiff){
                     showStats(who);
                     if(room.enemies[i].drop!==undefined){
                         addToInventory(GAME.player.inventory,[room.enemies[i].drop.name,room.enemies[i].dropAmount])
-                            inventoryText.innerText=printTable(GAME.player.inventory)
+                        inventoryText.innerText=printTable(GAME.player.inventory)
+                        if(room.enemies[i].drop.type==="equipment")
+                            statIncrease(room.enemies[i].drop.stats)
                     }
-
                 }
                 else
                     if(who.health<=0){
@@ -285,7 +361,6 @@ function combat(who,room,moved,yDiff, xDiff){
                         GAME.board=createBoard(c.boardWidth, c.boardHeight, c.emptySpace);
                         displayBoard(GAME.board)
                         _gameOver();
-
                     }
                     else
                         showStats(who,GAME.map.A.enemies[i].info)
@@ -293,12 +368,7 @@ function combat(who,room,moved,yDiff, xDiff){
             }
 }
 function looting(who,room,moved,yDiff, xDiff){
-
     for(let i=0;i<room.items.length;i++){
-        if((who.x===room.items[i].x || who.x-1===room.items[i].x || who.x+1===room.items[i].x) && (who.y===room.items[i].y || who.y-1===room.items[i].y || who.y+1===room.items[i].y) && room.items[i].collected===false)
-        showStats(who,{},room.items[i].info,room.items[i].amount);
-        else
-        showStats(who);
     if(room.items[i].x===who.x+xDiff && room.items[i].y===who.y+yDiff && room.items[i].collected===false && moved===false){
         GAME.map.A.items[i].collected=true;
         removeFromBoard(GAME.board,who);
@@ -309,8 +379,21 @@ function looting(who,room,moved,yDiff, xDiff){
         displayBoard(GAME.board);
         addToInventory(GAME.player.inventory,[room.items[i].info.name,room.items[i].amount])
         inventoryText.innerText=printTable(GAME.player.inventory)
+        if(room.items[i].info.type==="equipment")
+            statIncrease(room.items[i].info.stats)
+
     } 
 }
+}
+function gates(who,room,moved,yDiff,xDiff){
+    for(let i=0;i<room.gates.length;i++)
+    if(room.gates[i].x===who.x+xDiff && room.gates[i].y===who.y+yDiff && moved===false){
+        GAME.currentRoom=room.gates[i].to;
+        removeFromBoard(GAME.board,who);
+        GAME.player.x=room.gates[i].playerStart.x;
+        GAME.player.y=room.gates[i].playerStart.y;
+        drawScreen();
+    }
 }
 function move(who, yDiff, xDiff) {
     let moved=false;
@@ -324,42 +407,19 @@ function move(who, yDiff, xDiff) {
     }
         switch(GAME.currentRoom){
             case "A":{
-                    for(let i=0;i<GAME.map.A.gates.length;i++)
-                        if(GAME.map.A.gates[i].x===who.x+xDiff && GAME.map.A.gates[i].y===who.y+yDiff && moved===false){
-                            GAME.currentRoom=GAME.map.A.gates[i].to;
-                            removeFromBoard(GAME.board,who)
-                            GAME.player.x=GAME.map.A.gates[i].playerStart.x;
-                            GAME.player.y=GAME.map.A.gates[i].playerStart.y;
-                            drawScreen();
-                        }
-                        looting(who,GAME.map.A,moved,yDiff,xDiff);
-                        combat(who,GAME.map.A,moved,yDiff,xDiff);
-                                
-                            
-                    break;
-        }
+                gates(who,GAME.map.A,moved,yDiff,xDiff);
+                looting(who,GAME.map.A,moved,yDiff,xDiff);
+                combat(who,GAME.map.A,moved,yDiff,xDiff);
+                break;
+            }
             case "B":{
-                for(let i=0;i<GAME.map.B.gates.length;i++)
-                if(GAME.map.B.gates[i].x===who.x+xDiff && GAME.map.B.gates[i].y===who.y+yDiff && moved===false){
-                    GAME.currentRoom=GAME.map.B.gates[i].to;
-                    removeFromBoard(GAME.board,who)
-                    GAME.player.x=GAME.map.B.gates[i].playerStart.x;
-                    GAME.player.y=GAME.map.B.gates[i].playerStart.y;
-                    drawScreen();
-                }
+                gates(who,GAME.map.B,moved,yDiff,xDiff);
                 looting(who,GAME.map.B,moved,yDiff,xDiff);
                 combat(who,GAME.map.B,moved,yDiff,xDiff);
                 break;
             }
             case "C":{
-                for(let i=0;i<GAME.map.C.gates.length;i++)
-                if(GAME.map.C.gates[i].x===who.x+xDiff && GAME.map.C.gates[i].y===who.y+yDiff){
-                    GAME.currentRoom=GAME.map.C.gates[i].to;
-                    removeFromBoard(GAME.board,who)
-                    GAME.player.x=GAME.map.C.gates[i].playerStart.x;
-                    GAME.player.y=GAME.map.C.gates[i].playerStart.y;
-                    drawScreen();
-                }
+                gates(who,GAME.map.C,moved,yDiff,xDiff);
                 looting(who,GAME.map.C,moved,yDiff,xDiff);
                 combat(who,GAME.map.C,moved,yDiff,xDiff);
                 break;
@@ -374,7 +434,10 @@ function hit(board, y, x) {
 
 function addToBoard(board,item) {
     // ...
+    if(item.icon!==undefined)
     board[item.y][item.x]=item.icon;
+    else
+        board[item.y][item.x]=item.info.icon;
 }
 
 function removeFromBoard(board, item) {
@@ -410,41 +473,34 @@ function drawRoom(board, topY, leftX, bottomY, rightX,allGates,items,enemies) {
                 board[items[i].y][items[i].x]=items[i].info.icon;
         for(let i=0;i<enemies.length;i++)
             if(enemies[i].killed===false){
-                board[enemies[i].y][enemies[i].x]=enemies[i].info.icon;
+                    board[enemies[i].y][enemies[i].x]=enemies[i].info.icon;
             }
 }
 
-function showStats(player, enemies,items,amount) {
+function showStats(player, enemies) {
     let playerStats = "" // ...
     let enemyStats = "" // ... concatenate them with a newline
-    let itemToolTip="";
-    console.log(items);
     if(player!==undefined)
-    playerStats+="Name: "+player.name+"\nRace: "+player.race+"\nHealth: "+player.health+"\nAttack: "+player.attack+"\nDefense:  "+player.defense;
+        playerStats+="Name: "+player.name+"\nRace: "+player.race+"\nHealth: "+player.health+"\nAttack: "+player.attack+"\nDefense:  "+player.defense;
     else
-    playerStats="";
+        playerStats="";
     if(enemies!==undefined)
         enemyStats+="Name: "+enemies.name+"\nRace: "+enemies.race+"\nHealth: "+enemies.health+"\nAttack: "+enemies.attack+"\nDefense:  "+enemies.defense;
     else
         enemyStats="";
-        if(items!==undefined)
-        itemToolTip+="aaa"//"Name: "+items.name+"\nAmount: "+amount;
-        else
-        itemToolTip="";
-        _updateStats(playerStats, enemyStats,itemToolTip)
+    _updateStats(playerStats, enemyStats,itemToolTip)
 }
 
 function _displayBoard(screen) {
     document.getElementById("screen").innerText = screen
 }
 
-function _updateStats(playerStatText, enemyStatText,itemText) {
+function _updateStats(playerStatText, enemyStatText) {
     const playerStats = document.getElementById("playerStats")
     playerStats.innerText = playerStatText
     const enemyStats = document.getElementById("enemyStats")
-    enemyStats.innerText = enemyStatText
-    const itemToolTip = document.getElementById("itemToolTip")
-    itemToolTip.innerText = itemText;
+    enemyStats.innerText = enemyStatText;
+
 }
 
 /**
@@ -475,11 +531,14 @@ function _start(moveCB) {
             case 'a': { yDiff =0; xDiff = -1; break; }
             case 'd': { yDiff = 0; xDiff = 1; break; }
             case 'i': { inventoryText.classList.toggle("is-hidden"); inventoryText.innerText=printTable(GAME.player.inventory); break;}
+            case '1': { if(foundInInventory(GAME.player.inventory,"Health Potion")) {removeFromInventory(GAME.player.inventory,["Health Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.healthPotion.stats); showStats(GAME.player);} break;}
+            case '2': {if(foundInInventory(GAME.player.inventory,"Attack Potion")) {removeFromInventory(GAME.player.inventory,["Attack Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.attackPotion.stats); showStats(GAME.player);} break;}
+            case '3': {if(foundInInventory(GAME.player.inventory,"Defense Potion")) {removeFromInventory(GAME.player.inventory,["Defense Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.defensePotion.stats); showStats(GAME.player);} break;}
         }
         if (xDiff !== 0 || yDiff !== 0) {
             moveCB(yDiff, xDiff);
         }
-        move(GAME.player,yDiff,xDiff)
+
     }
     document.addEventListener("keypress", _keypressListener)
     init();
@@ -516,7 +575,6 @@ function addToInventory(inventory, addedItems) {
             copy.push(parseInt(addedItems[i+1]));
             if(key===copy[i]){
                 copy[i+1]+=value;
-
                 inventory[key]=copy[i+1];
             }
             else{
@@ -582,4 +640,16 @@ function printTable(inventory, order) {
     }
     shownInventory+="-----------------\n";
     return shownInventory;
+}
+function foundInInventory(inventory,item){
+    for(let key of Object.keys(inventory)){
+        if(key===item)
+            return true;
+    }
+    return false;
+}
+function statIncrease(stats){
+    GAME.player.health+=stats.health;
+    GAME.player.attack+=stats.attack;
+    GAME.player.defense+=stats.defense;
 }
