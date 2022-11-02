@@ -14,6 +14,7 @@ body {
 }
 
 #display {
+    margin-left: auto;
     position: absolute;
     width: 700px;
     height: 420px;
@@ -21,6 +22,7 @@ body {
     border: 30px solid #333333;
     background-color: black;
     overflow: hidden;
+
 }
 
 #screen {
@@ -46,7 +48,24 @@ body {
     inset: 0;
     text-align: center;
 }
-
+#inventory{
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: turquoise;
+    opacity: 0.5;
+    margin: 10px;
+    font-size:small;
+}
+#itemToolTip{
+    position: absolute;
+    top: 0;
+    right:0;
+    color: turquoise;
+    opacity: 0.5;
+    margin: 10px;
+    font-size:small;
+}
 #playerStats {
     position: absolute;
     bottom: 0;
@@ -54,6 +73,7 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
+    font-size:small;
 }
 #enemyStats {
     position: absolute;
@@ -62,6 +82,7 @@ body {
     color: red;
     opacity: 0.5;
     margin: 10px;
+    font-size:small;
 }
 
 .is-hidden {
