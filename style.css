@@ -55,7 +55,11 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
+<<<<<<< HEAD
     font-size:medium;
+=======
+    font-size:small;
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 #itemToolTip{
     position: absolute;
@@ -64,7 +68,11 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
+<<<<<<< HEAD
     font-size:medium;
+=======
+    font-size:small;
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 #message{
     position: absolute;
@@ -82,7 +90,11 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
+<<<<<<< HEAD
     font-size:medium;
+=======
+    font-size:small;
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 #enemyStats {
     position: absolute;
@@ -91,7 +103,11 @@ body {
     color: red;
     opacity: 0.5;
     margin: 10px;
+<<<<<<< HEAD
     font-size:medium;
+=======
+    font-size:small;
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 
 .is-hidden {

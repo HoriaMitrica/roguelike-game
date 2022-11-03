@@ -94,11 +94,17 @@ const ROOM = {
  */
 const enemyIcon= {
     rat: "R",
+<<<<<<< HEAD
     wolf:"W",
     bat:"B"
 }
 const itemIcon={
     keyRoomB: "k",
+=======
+    wolf:"W"
+}
+const itemIcon={
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
     goldCoin:"g",
     torch:"t",
     clothArmor:"c",
@@ -111,7 +117,11 @@ const itemIcon={
  * Info of the enemies
  */
 const enemyInfo = {
+<<<<<<< HEAD
     rat1:{
+=======
+    rat:{
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
         name:"Fat",
         race:"Rat",
         health: 21, 
@@ -120,6 +130,7 @@ const enemyInfo = {
         defense: 1,
         icon: enemyIcon.rat,
         isBoss: false
+<<<<<<< HEAD
     },
     wolf1: {
         name: "Fluffy",
@@ -159,6 +170,12 @@ const itemInfo={
         type:"key",
         icon:itemIcon.keyRoomB,
     },
+=======
+    }
+    // [ENEMY.RAT]: { health: 10, attack: 1, defense: 0, icon: ENEMY.RAT, race: "Rat", isBoss: false },
+}
+const itemInfo={
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
     torch:{
         name:"Torch",
         type:"miscellanoeus",
@@ -194,9 +211,15 @@ const itemInfo={
             type:"potion",
             icon:itemIcon.defensePotion,
             stats:{
+<<<<<<< HEAD
                 health:0,
                 attack:0,
                 defense:5
+=======
+                    health:0,
+                attack:0,
+                dfense:5
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
             }
         },
     clothArmor:{
@@ -235,13 +258,18 @@ function generateMap() {
                 opened:false,
                 x: 20, 
                 y: 15, 
+<<<<<<< HEAD
                 icon: c.gateVertical, 
+=======
+                icon: c.gateHorizontal, 
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                 playerStart: { x: 21, y: 15 } 
             },
         ],
         enemies: [
             {x:16,
             y:17,
+<<<<<<< HEAD
             info:enemyInfo.rat1,
             drop:itemInfo.keyRoomB,
             dropAmount:1,
@@ -263,6 +291,13 @@ function generateMap() {
                 dropAmount: 5,
                 killed: false,
               }
+=======
+            info:enemyInfo.rat,
+            drop:itemInfo.goldCoin,
+            dropAmount:5,
+            killed:false
+            }
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
             // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
         ],
         items: [
@@ -272,12 +307,20 @@ function generateMap() {
                 amount:1,
                 info:itemInfo.clothArmor,
                 collected:false
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
             },
             {
                 x:11,
                 y:18,
                 amount:2,
+<<<<<<< HEAD
                 info:itemInfo.defensePotion,
+=======
+                info:itemInfo.healthPotion,
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                 collected:false
             }
         ]
@@ -286,8 +329,11 @@ function generateMap() {
             layout: [13, 20, 17, 88],
             gates: [
                  { to: ROOM.A, 
+<<<<<<< HEAD
                     requiresKey:false,
                     opened:true,
+=======
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                     x: 20, 
                     y: 15, 
                     icon: c.gateVertical, 
@@ -298,10 +344,20 @@ function generateMap() {
                     x: 60, 
                     y: 13, 
                     icon: c.gateHorizontal, 
+<<<<<<< HEAD
+=======
+                    playerStart: { x: 19, y: 15 } 
+                },
+                { to: ROOM.C, 
+                    x: 60, 
+                    y: 13, 
+                    icon: c.gateVertical, 
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                     playerStart: { x: 60, y: 12 } 
                 }
             ],
             enemies: [
+<<<<<<< HEAD
                 {
                     x: 35,
                     y: 15,
@@ -335,6 +391,18 @@ function generateMap() {
             gates: [
                  { to: ROOM.B, 
                     opened:true,
+=======
+                // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
+            ],
+            items: [
+
+            ]
+        },
+        [ROOM.C]: {
+            layout: [6, 40, 13, 65],
+            gates: [
+                 { to: ROOM.B, 
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                     x: 60, 
                     y: 13, 
                     icon: c.gateHorizontal, 
@@ -392,6 +460,7 @@ function moveAll(yDiff, xDiff) {
     // ... show statistics with `showStats`
     // ... reload screen with `drawScreen`
     // for(let i=0;i<enemies.length,i++)
+<<<<<<< HEAD
     move(GAME.player,yDiff,xDiff);
     // switch(GAME.currentRoom){
     //     case "A":{
@@ -418,6 +487,30 @@ function combat(who,room,moved,yDiff, xDiff){
         else
             if(show===false)
                 showStats(who);
+=======
+    move(GAME.player,yDiff,xDiff)
+    switch(GAME.currentRoom){
+        case "A":{
+            moveAI(GAME.map.A.enemies)
+            break;
+        }
+        case "B":{
+            moveAI(GAME.map.B.enemies)
+            break;
+        }
+        case "C":{
+            moveAI(GAME.map.C.enemies)
+            break;
+        }
+    }
+}
+function combat(who,room,moved,yDiff, xDiff){
+    for(let i=0;i<room.enemies.length;i++) {
+        if((who.x===room.enemies[i].x || who.x-1===room.enemies[i].x || who.x+1===room.enemies[i].x) && (who.y===room.enemies[i].y || who.y-1===room.enemies[i].y || who.y+1===room.enemies[i].y) && room.enemies[i].killed===false)
+            showStats(who,room.enemies[i].info);
+        else
+            showStats(who);
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
         if(room.enemies[i].x===who.x+xDiff && room.enemies[i].y===who.y+yDiff && room.enemies[i].killed===false && moved===false){    
             if(who.attack-room.enemies[i].info.defense>0)
                 room.enemies[i].info.health-=who.attack-room.enemies[i].info.defense;
@@ -434,12 +527,18 @@ function combat(who,room,moved,yDiff, xDiff){
                     displayBoard(GAME.board);
                     showStats(who);
                     if(room.enemies[i].drop!==undefined){
+<<<<<<< HEAD
                         
+=======
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                         addToInventory(GAME.player.inventory,[room.enemies[i].drop.name,room.enemies[i].dropAmount])
                         inventoryText.innerText=printTable(GAME.player.inventory)
                         if(room.enemies[i].drop.type==="equipment")
                             statIncrease(room.enemies[i].drop.stats)
+<<<<<<< HEAD
                             _displayMessage("The enemy dropped "+room.enemies[i].drop.name)
+=======
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                     }
                 }
                 else
@@ -455,6 +554,7 @@ function combat(who,room,moved,yDiff, xDiff){
             }
 }
 function looting(who,room,moved,yDiff, xDiff){
+<<<<<<< HEAD
     let show=false;
     for(let i=0;i<room.items.length;i++){
         if((who.x===room.items[i].x || who.x-1===room.items[i].x || who.x+1===room.items[i].x) && (who.y===room.items[i].y || who.y-1===room.items[i].y || who.y+1===room.items[i].y) && room.items[i].collected===false){
@@ -465,6 +565,9 @@ function looting(who,room,moved,yDiff, xDiff){
         if(show===false)
             _showItemsTooltip();
     }
+=======
+    for(let i=0;i<room.items.length;i++){
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
     if(room.items[i].x===who.x+xDiff && room.items[i].y===who.y+yDiff && room.items[i].collected===false && moved===false){
         GAME.map.A.items[i].collected=true;
         removeFromBoard(GAME.board,who);
@@ -477,6 +580,7 @@ function looting(who,room,moved,yDiff, xDiff){
         inventoryText.innerText=printTable(GAME.player.inventory)
         if(room.items[i].info.type==="equipment")
             statIncrease(room.items[i].info.stats)
+<<<<<<< HEAD
         _showItemsTooltip();
          _displayMessage("You pciked up "+room.items[i].info.name)
     }
@@ -504,6 +608,23 @@ function gates(who,room,moved,yDiff,xDiff){
 }
 function move(who, yDiff, xDiff) {
     _displayMessage("")
+=======
+
+    } 
+}
+}
+function gates(who,room,moved,yDiff,xDiff){
+    for(let i=0;i<room.gates.length;i++)
+    if(room.gates[i].x===who.x+xDiff && room.gates[i].y===who.y+yDiff && moved===false){
+        GAME.currentRoom=room.gates[i].to;
+        removeFromBoard(GAME.board,who);
+        GAME.player.x=room.gates[i].playerStart.x;
+        GAME.player.y=room.gates[i].playerStart.y;
+        drawScreen();
+    }
+}
+function move(who, yDiff, xDiff) {
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
     let moved=false;
     if(GAME.board[who.y+yDiff][who.x+xDiff]===c.emptySpace){
         removeFromBoard(GAME.board,who)
@@ -580,7 +701,11 @@ function drawRoom(board, topY, leftX, bottomY, rightX,allGates,items,enemies) {
             if(items[i].collected===false)
                 board[items[i].y][items[i].x]=items[i].info.icon;
         for(let i=0;i<enemies.length;i++)
+<<<<<<< HEAD
             if(enemies[i].killed===false){  
+=======
+            if(enemies[i].killed===false){
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
                     board[enemies[i].y][enemies[i].x]=enemies[i].info.icon;
             }
 }
@@ -596,7 +721,11 @@ function showStats(player, enemies) {
         enemyStats+="Name: "+enemies.name+"\nRace: "+enemies.race+"\nHealth: "+enemies.health+"\nAttack: "+enemies.attack+"\nDefense:  "+enemies.defense;
     else
         enemyStats="";
+<<<<<<< HEAD
     _updateStats(playerStats, enemyStats)
+=======
+    _updateStats(playerStats, enemyStats,itemToolTip)
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 
 function _displayBoard(screen) {
@@ -608,6 +737,7 @@ function _updateStats(playerStatText, enemyStatText) {
     playerStats.innerText = playerStatText
     const enemyStats = document.getElementById("enemyStats")
     enemyStats.innerText = enemyStatText;
+<<<<<<< HEAD
 }
 function _showItemsTooltip(items,amount){
     let itemText="";
@@ -622,6 +752,9 @@ function _showItemsTooltip(items,amount){
 function _displayMessage(message){
     let messageText = document.getElementById("message");
     messageText.innerText=message;
+=======
+
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
 }
 /**
  * Keep a reference of the existing keypress listener, to be able to remove it later
@@ -651,6 +784,7 @@ function _start(moveCB) {
             case 'a': { yDiff =0; xDiff = -1; break; }
             case 'd': { yDiff = 0; xDiff = 1; break; }
             case 'i': { inventoryText.classList.toggle("is-hidden"); inventoryText.innerText=printTable(GAME.player.inventory); break;}
+<<<<<<< HEAD
             case '1': { 
                 if(foundInInventory(GAME.player.inventory,"Health Potion")){
                     removeFromInventory(GAME.player.inventory,["Health Potion",1]);
@@ -678,6 +812,11 @@ function _start(moveCB) {
                     _displayMessage("You used Defense Potion")
                 }
                 break;}
+=======
+            case '1': { if(foundInInventory(GAME.player.inventory,"Health Potion")) {removeFromInventory(GAME.player.inventory,["Health Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.healthPotion.stats); showStats(GAME.player);} break;}
+            case '2': {if(foundInInventory(GAME.player.inventory,"Attack Potion")) {removeFromInventory(GAME.player.inventory,["Attack Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.attackPotion.stats); showStats(GAME.player);} break;}
+            case '3': {if(foundInInventory(GAME.player.inventory,"Defense Potion")) {removeFromInventory(GAME.player.inventory,["Defense Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.defensePotion.stats); showStats(GAME.player);} break;}
+>>>>>>> 1d2d675560e3957f3b3bace07bae8fca0d12c7dc
         }
         if (xDiff !== 0 || yDiff !== 0) {
             moveCB(yDiff, xDiff);
