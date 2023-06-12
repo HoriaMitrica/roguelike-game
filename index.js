@@ -44,7 +44,7 @@ function initPlayer(name, race) {
                 race: race,
                 health: 150,
                 attack: 5,
-                defense: 10,
+                defense: 5,
                 isPlayer: true,
                 inventory:{
                     "torch":1,
@@ -61,7 +61,7 @@ function initPlayer(name, race) {
                 race: race,
                 health: 150,
                 attack: 5,
-                defense: 10,
+                defense: 5,
                 isPlayer: true,
                 inventory:{
                     "torch":1,
@@ -94,22 +94,26 @@ const ROOM = {
  */
 const enemyIcon= {
     rat: "R",
-    wolf:"W"
+    wolf:"W",
+    bat:"B",
+    dragon:"D"
 }
 const itemIcon={
+    keyRoomB: "k",
     goldCoin:"g",
     torch:"t",
     clothArmor:"c",
     healthPotion:"p",
     attackPotion:"a",
-    defensePotion:"d"
+    defensePotion:"d",
+    rustySword:"s"
 }
 
 /**
  * Info of the enemies
  */
 const enemyInfo = {
-    rat:{
+    rat1:{
         name:"Fat",
         race:"Rat",
         health: 21, 
@@ -118,10 +122,55 @@ const enemyInfo = {
         defense: 1,
         icon: enemyIcon.rat,
         isBoss: false
-    }
+    },
+    wolf1: {
+        name: "Fluffy",
+        race: "Wolf",
+        health: 41,
+        fullHealth: 41,
+        attack: 15,
+        defense: 3,
+        icon: enemyIcon.wolf,
+        isBoss: false,
+      },
+      bat1: {
+        name: "Bob",
+        race: "Bat",
+        health: 31,
+        fullHealth: 31,
+        attack: 12,
+        defense: 3,
+        icon: enemyIcon.bat,
+        isBoss: false,
+      },
+      bat2: {
+        name: "Bob",
+        race: "Bat",
+        health: 31,
+        fullHealth: 31,
+        attack: 12,
+        defense: 3,
+        icon: enemyIcon.bat,
+        isBoss: false,
+      },
+      dragon1: {
+        name: "Smaug",
+        race: "Dragon",
+        health: 100,
+        fullHealth: 100,
+        attack: 20,
+        defense: 5,
+        icon: enemyIcon.dragon,
+        isBoss: true,
+      }
     // [ENEMY.RAT]: { health: 10, attack: 1, defense: 0, icon: ENEMY.RAT, race: "Rat", isBoss: false },
 }
 const itemInfo={
+    keyRoomB:{
+        name:"Mysterious Key",
+        type:"key",
+        icon:itemIcon.keyRoomB,
+    },
     torch:{
         name:"Torch",
         type:"miscellanoeus",
@@ -157,9 +206,9 @@ const itemInfo={
             type:"potion",
             icon:itemIcon.defensePotion,
             stats:{
-                    health:0,
+                health:0,
                 attack:0,
-                dfense:5
+                defense:3
             }
         },
     clothArmor:{
@@ -169,6 +218,16 @@ const itemInfo={
         stats:{
             health:10,
             attack:0,
+            defense:1
+        }
+    },
+    rustySword:{
+        name:"Rusty Sword",
+        type:"equipment",
+        icon:itemIcon.rustySword,
+        stats:{
+            health:0,
+            attack:5,
             defense:1
         }
     }
@@ -190,23 +249,42 @@ function init() {
 function generateMap() {
     return {
         [ROOM.A]: {
+            
             layout: [10, 10, 20, 20],
             gates: [
                 { to: ROOM.B, 
+                requiresKey:"Mysterious Key",
+                opened:false,
                 x: 20, 
                 y: 15, 
-                icon: c.gateHorizontal, 
+                icon: c.gateVertical, 
                 playerStart: { x: 21, y: 15 } 
             },
         ],
         enemies: [
             {x:16,
             y:17,
-            info:enemyInfo.rat,
-            drop:itemInfo.goldCoin,
-            dropAmount:5,
+            info:enemyInfo.rat1,
+            drop:itemInfo.keyRoomB,
+            dropAmount:1,
             killed:false
-            }
+            },
+            {
+                x: 19,
+                y: 15,
+                info: enemyInfo.bat1,
+                drop: itemInfo.goldCoin,
+                dropAmount: 5,
+                killed: false,
+            },
+            {
+                x: 18,
+                y: 12,
+                info: enemyInfo.wolf1,
+                drop: itemInfo.goldCoin,
+                dropAmount: 5,
+                killed: false,
+              }
             // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
         ],
         items: [
@@ -216,13 +294,12 @@ function generateMap() {
                 amount:1,
                 info:itemInfo.clothArmor,
                 collected:false
-
             },
             {
                 x:11,
                 y:18,
                 amount:2,
-                info:itemInfo.healthPotion,
+                info:itemInfo.defensePotion,
                 collected:false
             }
         ]
@@ -231,35 +308,70 @@ function generateMap() {
             layout: [13, 20, 17, 88],
             gates: [
                  { to: ROOM.A, 
+                    requiresKey:false,
+                    opened:true,
                     x: 20, 
                     y: 15, 
-                    icon: c.gateHorizontal, 
+                    icon: c.gateVertical, 
                     playerStart: { x: 19, y: 15 } 
                 },
                 { to: ROOM.C, 
+                    messageOnEnter:"This is the dragon's lair! Be careful",
+                    opened:true,
                     x: 60, 
                     y: 13, 
-                    icon: c.gateVertical, 
+                    icon: c.gateHorizontal, 
                     playerStart: { x: 60, y: 12 } 
                 }
             ],
             enemies: [
+                {
+                    x: 35,
+                    y: 15,
+                    info: enemyInfo.bat2,
+                    drop: itemInfo.rustySword,
+                    dropAmount: 1,
+                    killed: false,
+                  }
                 // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
             ],
             items: [
-
+                {
+                    x:39,
+                    y:15,
+                    amount:1,
+                    info:itemInfo.attackPotion,
+                    collected:false
+                },
+                {
+                    x:44,
+                    y:14,
+                    amount:3,
+                    info:itemInfo.healthPotion,
+                    collected:false
+                }
             ]
         },
         [ROOM.C]: {
+            requiresKey:true,
             layout: [6, 40, 13, 65],
             gates: [
                  { to: ROOM.B, 
+                    opened:true,
                     x: 60, 
                     y: 13, 
                     icon: c.gateHorizontal, 
                     playerStart: { x: 60, y: 14 } },
             ],
             enemies: [
+                {
+                    x: 45,
+                    y: 10,
+                    info: enemyInfo.dragon1,
+                    drop: itemInfo.goldCoin,
+                    dropAmount: 100,
+                    killed: false,
+                  }
                 // { type: ENEMY.RAT, x: 25, y: 15, name: "Rattata", ...ENEMY_INFO[ENEMY.RAT] },
             ],
             items: []
@@ -280,12 +392,7 @@ function generateMap() {
 function drawScreen() {
     // ... reset the board with `createBoard`
     GAME.board=createBoard(c.boardWidth, c.boardHeight, c.emptySpace);
-    if(GAME.currentRoom===ROOM.A)
-        drawRoom(GAME.board,GAME.map.A.layout[0],GAME.map.A.layout[1],GAME.map.A.layout[2],GAME.map.A.layout[3],GAME.map.A.gates,GAME.map.A.items,GAME.map.A.enemies)
-    if(GAME.currentRoom===ROOM.B)
-        drawRoom(GAME.board,GAME.map.B.layout[0],GAME.map.B.layout[1],GAME.map.B.layout[2],GAME.map.B.layout[3],GAME.map.B.gates,GAME.map.B.items,GAME.map.B.enemies)
-    if(GAME.currentRoom===ROOM.C)
-        drawRoom(GAME.board,GAME.map.C.layout[0],GAME.map.C.layout[1],GAME.map.C.layout[2],GAME.map.C.layout[3],GAME.map.C.gates,GAME.map.C.items,GAME.map.C.enemies)
+    drawRoom(GAME.board,GAME.map[GAME.currentRoom].layout[0],GAME.map[GAME.currentRoom].layout[1],GAME.map[GAME.currentRoom].layout[2],GAME.map[GAME.currentRoom].layout[3],GAME.map[GAME.currentRoom].gates,GAME.map[GAME.currentRoom].items,GAME.map[GAME.currentRoom].enemies)
     addToBoard(GAME.board,GAME.player)
     displayBoard(GAME.board)
 }
@@ -307,36 +414,25 @@ function moveAI(who){
     }
 }
 function moveAll(yDiff, xDiff) {
-    // ... use `move` to move all entities
-    // ... show statistics with `showStats`
-    // ... reload screen with `drawScreen`
-    // for(let i=0;i<enemies.length,i++)
-    move(GAME.player,yDiff,xDiff)
-    switch(GAME.currentRoom){
-        case "A":{
-            moveAI(GAME.map.A.enemies)
-            break;
-        }
-        case "B":{
-            moveAI(GAME.map.B.enemies)
-            break;
-        }
-        case "C":{
-            moveAI(GAME.map.C.enemies)
-            break;
-        }
-    }
+
+    move(GAME.player,yDiff,xDiff);
+    //moveAI(GAME.map[GAME.currentRoom].enemies)
+
 }
 function combat(who,room,moved,yDiff, xDiff){
+    let show=false;
+    
     for(let i=0;i<room.enemies.length;i++) {
-        if((who.x===room.enemies[i].x || who.x-1===room.enemies[i].x || who.x+1===room.enemies[i].x) && (who.y===room.enemies[i].y || who.y-1===room.enemies[i].y || who.y+1===room.enemies[i].y) && room.enemies[i].killed===false)
-            showStats(who,room.enemies[i].info);
+        if((who.x===room.enemies[i].x || who.x-1===room.enemies[i].x || who.x+1===room.enemies[i].x) && (who.y===room.enemies[i].y || who.y-1===room.enemies[i].y || who.y+1===room.enemies[i].y) && room.enemies[i].killed===false){
+        
+            showStats(room.enemies[i].info);
+            show=true;
+        }
         else
-            showStats(who);
+            if(show===false)
+                showStats(who);
         if(room.enemies[i].x===who.x+xDiff && room.enemies[i].y===who.y+yDiff && room.enemies[i].killed===false && moved===false){    
-            if(who.attack-room.enemies[i].info.defense>0)
                 room.enemies[i].info.health-=who.attack-room.enemies[i].info.defense;
-            if(room.enemies[i].info.attack>who.defense)
                 who.health-=room.enemies[i].info.attack-who.defense;
                 if(room.enemies[i].info.health<=0){
                     room.enemies[i].info.health=0;
@@ -353,24 +449,35 @@ function combat(who,room,moved,yDiff, xDiff){
                         inventoryText.innerText=printTable(GAME.player.inventory)
                         if(room.enemies[i].drop.type==="equipment")
                             statIncrease(room.enemies[i].drop.stats)
+                            _displayMessage("The enemy dropped "+room.enemies[i].drop.name)
                     }
                 }
                 else
                     if(who.health<=0){
                         showStats();
+                        inventoryText.classList.add("is-hidden");
                         GAME.board=createBoard(c.boardWidth, c.boardHeight, c.emptySpace);
                         displayBoard(GAME.board)
                         _gameOver();
                     }
                     else
-                        showStats(who,GAME.map.A.enemies[i].info)
+                        showStats(who,GAME.map[GAME.currentRoom].enemies[i].info)
                 }
             }
 }
 function looting(who,room,moved,yDiff, xDiff){
+    let show=false;
     for(let i=0;i<room.items.length;i++){
+        if((who.x===room.items[i].x || who.x-1===room.items[i].x || who.x+1===room.items[i].x) && (who.y===room.items[i].y || who.y-1===room.items[i].y || who.y+1===room.items[i].y) && room.items[i].collected===false){
+        _showItemsTooltip(room.items[i].info,room.items[i].amount);
+        show=true;
+        }
+    else{
+        if(show===false)
+            _showItemsTooltip();
+    }
     if(room.items[i].x===who.x+xDiff && room.items[i].y===who.y+yDiff && room.items[i].collected===false && moved===false){
-        GAME.map.A.items[i].collected=true;
+        room.items[i].collected=true;
         removeFromBoard(GAME.board,who);
         removeFromBoard(GAME.board,room.items[i])
         who.y+=yDiff;
@@ -381,21 +488,34 @@ function looting(who,room,moved,yDiff, xDiff){
         inventoryText.innerText=printTable(GAME.player.inventory)
         if(room.items[i].info.type==="equipment")
             statIncrease(room.items[i].info.stats)
-
-    } 
+        _showItemsTooltip();
+         _displayMessage("You picked up "+room.items[i].info.name)
+    }
 }
 }
 function gates(who,room,moved,yDiff,xDiff){
     for(let i=0;i<room.gates.length;i++)
     if(room.gates[i].x===who.x+xDiff && room.gates[i].y===who.y+yDiff && moved===false){
-        GAME.currentRoom=room.gates[i].to;
-        removeFromBoard(GAME.board,who);
-        GAME.player.x=room.gates[i].playerStart.x;
-        GAME.player.y=room.gates[i].playerStart.y;
-        drawScreen();
+        if(foundInInventory(GAME.player.inventory,room.gates[i].requiresKey)===true || room.gates[i].opened===true){
+            removeFromInventory(GAME.player.inventory,[room.gates[i].requiresKey,1])
+            inventoryText.innerText=printTable(GAME.player.inventory);
+            GAME.player.inventory,room.gates[i].opened=true;
+            GAME.currentRoom=room.gates[i].to;
+            removeFromBoard(GAME.board,who);
+            GAME.player.x=room.gates[i].playerStart.x;
+            GAME.player.y=room.gates[i].playerStart.y;
+            drawScreen();
+            if(room.gates[i].messageOnEnter!==undefined)
+                _displayMessage(room.gates[i].messageOnEnter);
+        }
+        else{
+            _displayMessage("You need a key to open this door!")
+
+        }
     }
 }
 function move(who, yDiff, xDiff) {
+    _displayMessage("")
     let moved=false;
     if(GAME.board[who.y+yDiff][who.x+xDiff]===c.emptySpace){
         removeFromBoard(GAME.board,who)
@@ -405,39 +525,15 @@ function move(who, yDiff, xDiff) {
         displayBoard(GAME.board);
         moved=true;
     }
-        switch(GAME.currentRoom){
-            case "A":{
-                gates(who,GAME.map.A,moved,yDiff,xDiff);
-                looting(who,GAME.map.A,moved,yDiff,xDiff);
-                combat(who,GAME.map.A,moved,yDiff,xDiff);
-                break;
-            }
-            case "B":{
-                gates(who,GAME.map.B,moved,yDiff,xDiff);
-                looting(who,GAME.map.B,moved,yDiff,xDiff);
-                combat(who,GAME.map.B,moved,yDiff,xDiff);
-                break;
-            }
-            case "C":{
-                gates(who,GAME.map.C,moved,yDiff,xDiff);
-                looting(who,GAME.map.C,moved,yDiff,xDiff);
-                combat(who,GAME.map.C,moved,yDiff,xDiff);
-                break;
-            }
-        }
-}
+        gates(who,GAME.map[GAME.currentRoom],moved,yDiff,xDiff);
+        looting(who,GAME.map[GAME.currentRoom],moved,yDiff,xDiff);
+        combat(who,GAME.map[GAME.currentRoom],moved,yDiff,xDiff);
 
-function hit(board, y, x) {
-    // ...
-    
 }
 
 function addToBoard(board,item) {
     // ...
-    if(item.icon!==undefined)
-    board[item.y][item.x]=item.icon;
-    else
-        board[item.y][item.x]=item.info.icon;
+    item.icon!==undefined ? board[item.y][item.x]=item.icon : board[item.y][item.x]=item.info.icon;
 }
 
 function removeFromBoard(board, item) {
@@ -472,7 +568,7 @@ function drawRoom(board, topY, leftX, bottomY, rightX,allGates,items,enemies) {
             if(items[i].collected===false)
                 board[items[i].y][items[i].x]=items[i].info.icon;
         for(let i=0;i<enemies.length;i++)
-            if(enemies[i].killed===false){
+            if(enemies[i].killed===false){  
                     board[enemies[i].y][enemies[i].x]=enemies[i].info.icon;
             }
 }
@@ -488,7 +584,7 @@ function showStats(player, enemies) {
         enemyStats+="Name: "+enemies.name+"\nRace: "+enemies.race+"\nHealth: "+enemies.health+"\nAttack: "+enemies.attack+"\nDefense:  "+enemies.defense;
     else
         enemyStats="";
-    _updateStats(playerStats, enemyStats,itemToolTip)
+    _updateStats(playerStats, enemyStats)
 }
 
 function _displayBoard(screen) {
@@ -500,9 +596,20 @@ function _updateStats(playerStatText, enemyStatText) {
     playerStats.innerText = playerStatText
     const enemyStats = document.getElementById("enemyStats")
     enemyStats.innerText = enemyStatText;
-
 }
-
+function _showItemsTooltip(items,amount){
+    let itemText="";
+    if(items!==undefined)
+    itemText+="Name: "+items.name+"\nType: "+items.type+"\nAmount: "+amount;
+    else
+    itemText="";
+    const itemToolTip = document.getElementById("itemToolTip")
+    itemToolTip.innerText=itemText;
+}
+function _displayMessage(message){
+    let messageText = document.getElementById("message");
+    messageText.innerText=message;
+}
 /**
  * Keep a reference of the existing keypress listener, to be able to remove it later
  */
@@ -520,8 +627,8 @@ function _start(moveCB) {
     const endBox = document.getElementById("endBox")
     endBox.classList.add("is-hidden")
     GAME.player.name = document.getElementById("playerName").value
-    GAME.player.race = document.getElementById("playerRace").value
     msgBox.classList.toggle("is-hidden")
+    GAME.player.race = document.getElementById("playerRace").value
     _keypressListener = (e) => {
         let xDiff = 0
         let yDiff = 0
@@ -531,15 +638,40 @@ function _start(moveCB) {
             case 'a': { yDiff =0; xDiff = -1; break; }
             case 'd': { yDiff = 0; xDiff = 1; break; }
             case 'i': { inventoryText.classList.toggle("is-hidden"); inventoryText.innerText=printTable(GAME.player.inventory); break;}
-            case '1': { if(foundInInventory(GAME.player.inventory,"Health Potion")) {removeFromInventory(GAME.player.inventory,["Health Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.healthPotion.stats); showStats(GAME.player);} break;}
-            case '2': {if(foundInInventory(GAME.player.inventory,"Attack Potion")) {removeFromInventory(GAME.player.inventory,["Attack Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.attackPotion.stats); showStats(GAME.player);} break;}
-            case '3': {if(foundInInventory(GAME.player.inventory,"Defense Potion")) {removeFromInventory(GAME.player.inventory,["Defense Potion",1]); inventoryText.innerText=printTable(GAME.player.inventory); statIncrease(itemInfo.defensePotion.stats); showStats(GAME.player);} break;}
+            case '1': { 
+                if(foundInInventory(GAME.player.inventory,"Health Potion")){
+                    removeFromInventory(GAME.player.inventory,["Health Potion",1]);
+                    inventoryText.innerText=printTable(GAME.player.inventory);
+                    statIncrease(itemInfo.healthPotion.stats);
+                    showStats(GAME.player);
+                    _displayMessage("You used Health Potion")
+                }
+                break;}
+            case '2': {
+                if(foundInInventory(GAME.player.inventory,"Attack Potion")){
+                    removeFromInventory(GAME.player.inventory,["Attack Potion",1]);
+                    inventoryText.innerText=printTable(GAME.player.inventory); 
+                    statIncrease(itemInfo.attackPotion.stats); 
+                    showStats(GAME.player);
+                    _displayMessage("You used Attack Potion")
+                    }
+                    break;}
+            case '3': {
+                if(foundInInventory(GAME.player.inventory,"Defense Potion")){
+                    removeFromInventory(GAME.player.inventory,["Defense Potion",1]);
+                    inventoryText.innerText=printTable(GAME.player.inventory);
+                    statIncrease(itemInfo.defensePotion.stats);
+                    showStats(GAME.player);
+                    _displayMessage("You used Defense Potion")
+                }
+                break;}
         }
         if (xDiff !== 0 || yDiff !== 0) {
             moveCB(yDiff, xDiff);
         }
 
     }
+    
     document.addEventListener("keypress", _keypressListener)
     init();
 }
@@ -563,8 +695,6 @@ function _restart() {
 }
 
 //Inventory functionality
-
-
 
 function addToInventory(inventory, addedItems) {
     let copy=[];
@@ -642,11 +772,7 @@ function printTable(inventory, order) {
     return shownInventory;
 }
 function foundInInventory(inventory,item){
-    for(let key of Object.keys(inventory)){
-        if(key===item)
-            return true;
-    }
-    return false;
+    return Object.keys(inventory).includes(item);
 }
 function statIncrease(stats){
     GAME.player.health+=stats.health;

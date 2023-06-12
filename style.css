@@ -55,7 +55,7 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
-    font-size:small;
+    font-size:medium;
 }
 #itemToolTip{
     position: absolute;
@@ -64,7 +64,7 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
-    font-size:small;
+    font-size:medium;
 }
 #message{
     position: absolute;
@@ -82,7 +82,7 @@ body {
     color: turquoise;
     opacity: 0.5;
     margin: 10px;
-    font-size:small;
+    font-size:medium;
 }
 #enemyStats {
     position: absolute;
@@ -91,7 +91,7 @@ body {
     color: red;
     opacity: 0.5;
     margin: 10px;
-    font-size:small;
+    font-size:medium;
 }
 
 .is-hidden {
