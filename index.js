@@ -425,7 +425,7 @@ function combat(who,room,moved,yDiff, xDiff){
     for(let i=0;i<room.enemies.length;i++) {
         if((who.x===room.enemies[i].x || who.x-1===room.enemies[i].x || who.x+1===room.enemies[i].x) && (who.y===room.enemies[i].y || who.y-1===room.enemies[i].y || who.y+1===room.enemies[i].y) && room.enemies[i].killed===false){
         
-            showStats(room.enemies[i].info);
+            showStats(who,room.enemies[i].info);
             show=true;
         }
         else
